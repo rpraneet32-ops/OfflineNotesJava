@@ -1,5 +1,6 @@
 package com.example.offlinenotesjava;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -7,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
+import com.google.firebase.auth.FirebaseAuth;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +22,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
+        // Check if user is NOT logged in
+        if (auth.getCurrentUser() == null) {
+            // Redirect to Login Screen
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish(); // Close this screen so they can't go back
+            return;   // Stop reading the rest of this file
+        }
         // 1. Setup the screen inputs
         editTitle = findViewById(R.id.editTitle);
         editContent = findViewById(R.id.editContent);
@@ -30,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         // 2. Start the Offline Database
         db = Room.databaseBuilder(getApplicationContext(),
                         AppDatabase.class, "my-offline-notes")
-                .allowMainThreadQueries() // Simple mode for beginners
+                .allowMainThreadQueries()
                 .build();
 
         // 3. Load any saved notes

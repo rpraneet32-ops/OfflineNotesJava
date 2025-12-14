@@ -64,6 +64,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        // 1. Find the Logout Button
+        Button btnLogout = findViewById(R.id.btnLogout);
+        // 2. Set the Click Listener
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Sign out from Firebase
+                FirebaseAuth.getInstance().signOut();
+
+                // Go back to Login Screen
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish(); // Close the notes screen
+            }
+        });
     }
 
     // Helper function to show notes

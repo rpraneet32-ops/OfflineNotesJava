@@ -14,7 +14,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private EditText editTitle, editContent;
-    private Button btnSave;
+    private Button btnSave, btnDelete;
     private TextView textNotesList;
     private AppDatabase db;
 
@@ -61,6 +61,32 @@ public class MainActivity extends AppCompatActivity {
                     editTitle.setText(""); // Clear inputs
                     editContent.setText("");
                     loadNotes(); // Refresh list
+                }
+            }
+        });
+
+        // 1. Find the new Delete Button
+        Button btnDelete = findViewById(R.id.btnDelete);
+
+        // 2. The Logic
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String t = editTitle.getText().toString();
+
+                if (!t.isEmpty()) {
+                    // Delete from database
+                    db.noteDao().deleteByTitle(t);
+
+                    // Give feedback
+                    android.widget.Toast.makeText(MainActivity.this, "Deleted: " + t, android.widget.Toast.LENGTH_SHORT).show();
+
+                    // Clear inputs and Refresh list
+                    editTitle.setText("");
+                    editContent.setText("");
+                    loadNotes();
+                } else {
+                    editTitle.setError("Enter a title to delete");
                 }
             }
         });
